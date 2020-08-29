@@ -39,5 +39,5 @@ export default class Note extends React.Component {
 }
 
 Note.propTypes = {
-  note: PropTypes.object,
+  note: PropTypes.object.isRequired,
 };
