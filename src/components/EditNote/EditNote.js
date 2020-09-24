@@ -2,23 +2,30 @@ import React from "react";
 
 import Context from "../../Context";
 
-export default class NewNote extends React.Component {
+export default class EditNote extends React.Component {
   state = {
-    title: "",
-    content: "",
-    folderId: this.context.folders[0].id,
+    note: {},
+    error: null,
   };
 
+  componentDidMount() {
+    this.setState({
+      note: this.props.location.state.note,
+    });
+  }
+
   static contextType = Context;
+
   // need to create error handling for functions
-  newNote(e) {
+  editNote(e) {
     e.preventDefault();
-    fetch("http://localhost:9090/api/notes", {
-      method: "POST",
+    console.log(this.state.note.title);
+    fetch(`http://localhost:9090/api/notes/${this.state.note.id}`, {
+      method: "PATCH",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(this.state),
+      body: JSON.stringify(this.state.note),
     })
       .then((res) => {
         if (!res.ok) {
@@ -26,14 +33,13 @@ export default class NewNote extends React.Component {
         }
         return res;
       })
-      .then((res) => res.json())
       .then((res) => {
-        this.context.newNote(res);
-        this.setState({ title: "", content: "", error: null });
+        this.context.editNote();
+        this.setState({ note: "", error: null });
       })
       .catch((err) => {
         this.setState({
-          error: "Unable to create new note. Please try again later.",
+          error: "Unable to edit note. Please try again later.",
         });
       });
   }
@@ -64,28 +70,47 @@ export default class NewNote extends React.Component {
       <section id="AddNote" className="AddNote">
         <form
           onSubmit={(e) => {
-            this.newNote(e);
-            this.props.history.push(`/folders/${this.state.folderId}`);
+            this.editNote(e);
+            this.props.history.push(`/folders/${this.state.note.folderId}`);
           }}
         >
-          <h2>Note title:</h2>
+          <h1>Edit Note</h1>
+          <h2>Title:</h2>
           {error}
           <input
             type="text"
-            name="noteName"
-            id="noteName"
-            value={this.state.name}
+            id="noteTitle"
+            aria-label="Edit note title"
+            value={this.state.note.title}
             required
-            onChange={(e) => this.setState({ title: e.target.value })}
+            onChange={(e) =>
+              e.persist(
+                this.setState((prevState) => ({
+                  note: {
+                    ...prevState.note,
+                    title: e.target.value,
+                  },
+                }))
+              )
+            }
           ></input>
-          <h2>Note content:</h2>
+          <h2>Content:</h2>
           <input
             type="text"
-            title="content"
-            id="content"
-            aria-label="Add note name"
-            value={this.state.content}
-            onChange={(e) => this.setState({ content: e.target.value })}
+            title="noteContent"
+            id="noteContent"
+            aria-label="Edit note content"
+            value={this.state.note.content}
+            onChange={(e) =>
+              e.persist(
+                this.setState((prevState) => ({
+                  note: {
+                    ...prevState.note,
+                    content: e.target.value,
+                  },
+                }))
+              )
+            }
           ></input>
           <select name="folderId" onChange={(e) => this.getFolderId(e)}>
             {this.context.folders.map((folder, i) => {

@@ -8,9 +8,10 @@ export default class Sidebar extends React.Component {
   static contextType = Context;
 
   render() {
+    const folders = this.context ? this.context.folders : [];
     return (
       <aside id="Sidebar" className="Sidebar">
-        {this.context.folders.map((folder, i) => (
+        {folders.map((folder, i) => (
           <Folder folder={folder} key={i} />
         ))}
         <AddFolder />

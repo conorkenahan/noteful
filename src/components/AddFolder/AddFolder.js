@@ -4,14 +4,14 @@ import Context from "../../Context";
 
 export default class AddFolder extends React.Component {
   state = {
-    name: "",
+    title: "",
   };
 
   static contextType = Context;
 
   newFolder(e) {
     e.preventDefault();
-    fetch("http://localhost:9090/folders", {
+    fetch("http://localhost:9090/api/folders", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -27,11 +27,11 @@ export default class AddFolder extends React.Component {
       .then((res) => res.json())
       .then((res) => {
         this.context.addFolder(res);
-        this.setState({ name: "" });
+        this.setState({ title: "" });
       })
       .catch((err) => {
         this.setState({
-          error: "Please try again later.",
+          error: err,
         });
       });
   }
@@ -47,11 +47,12 @@ export default class AddFolder extends React.Component {
         <h2>Add New Folder:</h2>
         {error}
         <input
+          aria-label="Add folder title"
           type="text"
           name="newFolder"
           id="newFolder"
-          value={this.state.name}
-          onChange={(e) => this.setState({ name: e.target.value })}
+          value={this.state.title}
+          onChange={(e) => this.setState({ title: e.target.value })}
         ></input>
         <button>Add</button>
       </form>
