@@ -1,6 +1,7 @@
 import React from "react";
 
 import Context from "../../Context";
+import config from "../../config";
 
 export default class NewNote extends React.Component {
   state = {
@@ -13,7 +14,7 @@ export default class NewNote extends React.Component {
   // need to create error handling for functions
   newNote(e) {
     e.preventDefault();
-    fetch("http://localhost:9090/api/notes", {
+    fetch(config.API_ENDPOINT + "/api/notes", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

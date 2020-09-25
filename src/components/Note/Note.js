@@ -4,12 +4,13 @@ import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 
 import Context from "../../Context";
+import config from "../../config";
 
 export default class Note extends React.Component {
   static contextType = Context;
 
   deleteNote(e) {
-    fetch(`http://localhost:9090/api/notes/${e}`, {
+    fetch(config.API_ENDPOINT + "/api/notes/" + e, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",

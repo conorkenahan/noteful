@@ -12,7 +12,7 @@ export default class Sidebar extends React.Component {
     return (
       <aside id="Sidebar" className="Sidebar">
         {folders.map((folder, i) => (
-          <Folder folder={folder} key={i} />
+          <Folder folder={folder} key={i} {...this.props} />
         ))}
         <AddFolder />
       </aside>

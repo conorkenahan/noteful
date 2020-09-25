@@ -6,11 +6,14 @@ import Notes from "./components/Notes/Notes";
 
 import AddNote from "./components/AddNote/AddNote";
 import EditNote from "./components/EditNote/EditNote";
+import EditFolder from "./components/EditFolder/EditFolder";
 
 import Nav from "./components/Nav/Nav";
 
 import Context from "./Context";
 import GeneralErrorBoundary from "./components/GeneralErrorBounday/GeneralErrorBoundary";
+
+import config from "./config";
 
 class App extends React.Component {
   state = {
@@ -29,7 +32,7 @@ class App extends React.Component {
     newNote: (newNote) =>
       this.setState({ notes: [...this.state.notes, newNote] }),
     editNote: () => {
-      fetch("http://localhost:9090/api/notes")
+      fetch(config.API_ENDPOINT + "/api/notes")
         .then((res) => res.json())
         .then((res) =>
           this.setState({
@@ -38,7 +41,7 @@ class App extends React.Component {
         );
     },
     editFolder: () => {
-      fetch("http://localhost:9090/api/folders")
+      fetch(config.API_ENDPOINT + "/api/folders")
         .then((res) => res.json())
         .then((res) =>
           this.setState({
@@ -49,14 +52,14 @@ class App extends React.Component {
   };
 
   componentDidMount() {
-    fetch("http://localhost:9090/api/folders")
+    fetch(config.API_ENDPOINT + "/api/folders")
       .then((res) => res.json())
       .then((res) =>
         this.setState({
           folders: res,
         })
       );
-    fetch("http://localhost:9090/api/notes")
+    fetch(config.API_ENDPOINT + "/api/notes")
       .then((res) => res.json())
       .then((res) =>
         this.setState({
@@ -81,6 +84,10 @@ class App extends React.Component {
                 />
                 <Route path="/new-note" component={AddNote} />
                 <Route path="/edit-note" component={EditNote} />
+                <Route
+                  path="/folders/edit-folder/:folderId"
+                  component={EditFolder}
+                />
               </GeneralErrorBoundary>
             </div>
           </div>

@@ -1,6 +1,7 @@
 import React from "react";
 
 import Context from "../../Context";
+import config from "../../config";
 
 export default class AddFolder extends React.Component {
   state = {
@@ -11,7 +12,7 @@ export default class AddFolder extends React.Component {
 
   newFolder(e) {
     e.preventDefault();
-    fetch("http://localhost:9090/api/folders", {
+    fetch(config.API_ENDPOINT + "/api/folders", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

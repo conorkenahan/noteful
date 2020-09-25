@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import Context from "../../Context";
+import config from "../../config";
 
 // import PropTypes from "prop-types";
 
@@ -8,7 +9,7 @@ export default class Folder extends React.Component {
   static contextType = Context;
 
   deleteFolder(e) {
-    fetch(`http://localhost:9090/api/folders/${e}`, {
+    fetch(config.API_ENDPOINT + "/api/folders/" + e, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -30,6 +31,7 @@ export default class Folder extends React.Component {
       });
   }
   render() {
+    const { folder } = this.props;
     return (
       <>
         <section id="Folder" className="Folder">
@@ -43,6 +45,14 @@ export default class Folder extends React.Component {
           >
             X
           </button>
+          <Link
+            to={{
+              pathname: `/folders/edit-folder/${this.props.folder.id}`,
+              state: { folder: folder },
+            }}
+          >
+            <p>Edit</p>
+          </Link>
         </section>
       </>
     );

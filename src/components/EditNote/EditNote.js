@@ -1,31 +1,26 @@
 import React from "react";
 
 import Context from "../../Context";
+import config from "../../config";
 
 export default class EditNote extends React.Component {
   state = {
-    note: {},
+    ...this.props.location.state.note,
     error: null,
   };
-
-  componentDidMount() {
-    this.setState({
-      note: this.props.location.state.note,
-    });
-  }
 
   static contextType = Context;
 
   // need to create error handling for functions
   editNote(e) {
     e.preventDefault();
-    console.log(this.state.note.title);
-    fetch(`http://localhost:9090/api/notes/${this.state.note.id}`, {
+    console.log(this.state.title);
+    fetch(config.API_ENDPOINT + "/api/notes/" + this.state.id, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(this.state.note),
+      body: JSON.stringify(this.state),
     })
       .then((res) => {
         if (!res.ok) {
@@ -35,7 +30,7 @@ export default class EditNote extends React.Component {
       })
       .then((res) => {
         this.context.editNote();
-        this.setState({ note: "", error: null });
+        this.setState({ ...res.body, error: null });
       })
       .catch((err) => {
         this.setState({
@@ -43,22 +38,6 @@ export default class EditNote extends React.Component {
         });
       });
   }
-
-  folderOptions = () => {
-    this.context.folders.map((folder, i) => {
-      return (
-        <option key={i} value={folder.id}>
-          {folder.title}
-        </option>
-      );
-    });
-  };
-
-  getFolderId = (e) => {
-    this.setState({
-      folderId: e.target.value,
-    });
-  };
 
   render() {
     const error = this.state.error ? (
@@ -71,7 +50,7 @@ export default class EditNote extends React.Component {
         <form
           onSubmit={(e) => {
             this.editNote(e);
-            this.props.history.push(`/folders/${this.state.note.folderId}`);
+            this.props.history.push(`/folders/${this.state.folderId}`);
           }}
         >
           <h1>Edit Note</h1>
@@ -81,18 +60,9 @@ export default class EditNote extends React.Component {
             type="text"
             id="noteTitle"
             aria-label="Edit note title"
-            value={this.state.note.title}
+            value={this.state.title}
             required
-            onChange={(e) =>
-              e.persist(
-                this.setState((prevState) => ({
-                  note: {
-                    ...prevState.note,
-                    title: e.target.value,
-                  },
-                }))
-              )
-            }
+            onChange={(e) => this.setState({ title: e.target.value })}
           ></input>
           <h2>Content:</h2>
           <input
@@ -100,28 +70,20 @@ export default class EditNote extends React.Component {
             title="noteContent"
             id="noteContent"
             aria-label="Edit note content"
-            value={this.state.note.content}
-            onChange={(e) =>
-              e.persist(
-                this.setState((prevState) => ({
-                  note: {
-                    ...prevState.note,
-                    content: e.target.value,
-                  },
-                }))
-              )
-            }
+            value={this.state.content}
+            onChange={(e) => this.setState({ content: e.target.value })}
           ></input>
-          <select name="folderId" onChange={(e) => this.getFolderId(e)}>
-            {this.context.folders.map((folder, i) => {
-              return (
-                <option key={i} value={folder.id}>
-                  {folder.title}
-                </option>
-              );
-            })}
+          <select
+            name="folderId"
+            onChange={(e) => this.setState({ folderId: e.target.value })}
+          >
+            {this.context.folders.map((folder) => (
+              <option key={folder.id} value={folder.id}>
+                {folder.title}
+              </option>
+            ))}
           </select>
-          <button>Add</button>
+          <button>Submit</button>
         </form>
       </section>
     );
