@@ -11,14 +11,10 @@ export default class EditFolder extends React.Component {
 
   static contextType = Context;
 
-  componentDidMount() {
-    console.log(this.props);
-  }
-
   // need to create error handling for functions
   editFolder(e) {
     e.preventDefault();
-    console.log(this.state.title);
+
     fetch(config.API_ENDPOINT + "/api/folders/" + this.state.id, {
       method: "PATCH",
       headers: {

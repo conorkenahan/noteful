@@ -14,7 +14,6 @@ export default class EditNote extends React.Component {
   // need to create error handling for functions
   editNote(e) {
     e.preventDefault();
-    console.log(this.state.title);
     fetch(config.API_ENDPOINT + "/api/notes/" + this.state.id, {
       method: "PATCH",
       headers: {
