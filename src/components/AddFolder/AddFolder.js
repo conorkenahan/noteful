@@ -53,6 +53,7 @@ export default class AddFolder extends React.Component {
           name="newFolder"
           id="newFolder"
           value={this.state.title}
+          required
           onChange={(e) => this.setState({ title: e.target.value })}
         ></input>
         <button>Add</button>
